@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 
 interface Photo {
   id: string;
@@ -34,24 +33,26 @@ export default function PhotoBackground() {
       {photos.map((photo, i) => (
         <div
           key={photo.id}
-          className="absolute inset-0 transition-opacity duration-2000"
-          style={{ opacity: i === current ? 0.18 : 0 }}
+          className="absolute inset-0"
+          style={{
+            opacity: i === current ? 0.22 : 0,
+            transition: "opacity 1.5s ease-in-out",
+          }}
         >
-          <Image
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
             src={photo.url}
-            alt={photo.name}
-            fill
-            className="object-cover"
-            unoptimized
+            alt=""
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
           />
         </div>
       ))}
-      {/* warm cream overlay so text stays readable */}
+      {/* Warm cream overlay */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(to bottom, rgba(245,240,232,0.55) 0%, rgba(245,240,232,0.85) 100%)",
+            "linear-gradient(to bottom, rgba(245,240,232,0.5) 0%, rgba(245,240,232,0.82) 100%)",
         }}
       />
     </div>

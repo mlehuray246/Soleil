@@ -20,6 +20,18 @@ function isSameDay(a: Date, b: Date) {
   );
 }
 
+// Parse event start — all-day events come as "YYYY-MM-DD" (no time),
+// which new Date() treats as UTC and shifts by timezone. Parse manually instead.
+function parseEventDate(dateStr: string): Date {
+  if (!dateStr) return new Date();
+  if (dateStr.length === 10) {
+    // All-day: "2026-06-02" — parse as local date
+    const [y, m, d] = dateStr.split("-").map(Number);
+    return new Date(y, m - 1, d);
+  }
+  return new Date(dateStr);
+}
+
 export default function CalendarView() {
   const [events, setEvents] = useState<CalEvent[]>([]);
   const [current, setCurrent] = useState(new Date());
@@ -46,7 +58,7 @@ export default function CalendarView() {
 
   const eventsOnDay = (day: number) => {
     const d = new Date(year, month, day);
-    return events.filter((e) => isSameDay(new Date(e.start), d));
+    return events.filter((e) => isSameDay(parseEventDate(e.start), d));
   };
 
   return (
@@ -148,7 +160,7 @@ export default function CalendarView() {
                 className="text-xs pt-0.5 w-16 flex-shrink-0"
                 style={{ color: "var(--muted-foreground)" }}
               >
-                {new Date(e.start).toLocaleDateString("en-GB", {
+                {parseEventDate(e.start).toLocaleDateString("en-GB", {
                   day: "numeric",
                   month: "short",
                 })}
@@ -159,7 +171,7 @@ export default function CalendarView() {
                 </p>
                 {!e.allDay && (
                   <p className="text-xs" style={{ color: "var(--muted-foreground)" }}>
-                    {new Date(e.start).toLocaleTimeString("en-GB", {
+                    {parseEventDate(e.start).toLocaleTimeString("en-GB", {
                       hour: "2-digit",
                       minute: "2-digit",
                     })}
