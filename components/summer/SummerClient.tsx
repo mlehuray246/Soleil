@@ -311,7 +311,6 @@ export default function SummerClient() {
   const [funItems, setFunItems] = useState<FunMedia[]>([]);
   const [completing, setCompleting] = useState<SummerActivity | null>(null);
   const [completingFun, setCompletingFun] = useState<FunMedia | null>(null);
-  const [seeded, setSeeded] = useState(false);
 
   const today = toDateKey(new Date());
 
@@ -327,23 +326,15 @@ export default function SummerClient() {
     setFunItems(items ?? []);
   };
 
-  const seedIfNeeded = async () => {
-    if (seeded) return;
-    // Check if existing data uses the correct start date; if not, force re-seed
-    const res = await fetch("/api/summer");
-    const { activities: existing } = await res.json();
-    const earliestDate = existing?.[0]?.scheduled_date as string | undefined;
-    const needsReseed = existing?.length > 0 && earliestDate && earliestDate !== START_DATE;
-    const forceParam = needsReseed ? "?force=true" : "";
-    await fetch(`/api/summer/seed${forceParam}`, { method: "POST" });
-    await fetch("/api/fun-media/seed", { method: "POST" });
-    setSeeded(true);
-    await load();
-    await loadFun();
-  };
-
   useEffect(() => {
-    seedIfNeeded().then(() => { load(); loadFun(); });
+    const init = async () => {
+      // Only seed if the table is completely empty — never wipe existing data
+      await fetch("/api/summer/seed", { method: "POST" });
+      await fetch("/api/fun-media/seed", { method: "POST" });
+      await load();
+      await loadFun();
+    };
+    init();
   }, []);
 
   const complete = async (activity: SummerActivity, rating: number, feedback?: string) => {
