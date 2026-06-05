@@ -237,11 +237,10 @@ export default function HomeClient({ firstName, greeting, today }: {
       </div>
 
       {/* ── DESKTOP layout (hidden on mobile) ──────────────────────── */}
-    <div className="hidden md:block" style={{
+    <div className="hidden md:flex" style={{
       height: "calc(100vh - 56px)",
       overflow: "hidden",
       background: "var(--background)",
-      display: "flex",
       flexDirection: "column",
     }}>
 
