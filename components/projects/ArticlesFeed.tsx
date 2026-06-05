@@ -24,7 +24,7 @@ export default function ArticlesFeed() {
 
   const load = async () => {
     setLoading(true);
-    const res = await fetch("/api/articles");
+    const res = await fetch("/api/articles", { cache: "no-store" });
     const { articles } = await res.json();
     setArticles(articles ?? []);
     setLoading(false);

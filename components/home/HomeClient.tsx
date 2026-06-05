@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import TodoWidget from "@/components/home/TodoWidget";
 import EmailWidget from "@/components/home/EmailWidget";
+import TedTalkWidget from "@/components/home/TedTalkWidget";
 
 interface Photo { id: string; url: string; }
 
@@ -137,7 +138,106 @@ export default function HomeClient({ firstName, greeting, today }: {
   const p = (i: number) => photos[i]?.url ?? "";
 
   return (
-    <div style={{
+    <>
+      {/* ── MOBILE layout (hidden on md+) ──────────────────────────── */}
+      <div
+        className="md:hidden flex flex-col gap-4 px-5 pt-5"
+        style={{
+          background: "var(--background)",
+          minHeight: "calc(100dvh - 52px)",
+          paddingBottom: "calc(env(safe-area-inset-bottom) + 72px)",
+          overflowY: "auto",
+        }}
+      >
+        {/* Greeting */}
+        <div>
+          <p style={{
+            fontSize: "10px", letterSpacing: "0.18em", textTransform: "uppercase",
+            color: "var(--muted-foreground)", fontFamily: "var(--font-dm-sans)", marginBottom: 6,
+          }}>
+            {today}
+          </p>
+          <h1 style={{
+            fontFamily: "var(--font-cormorant)", fontSize: "2rem",
+            fontWeight: 300, color: "var(--primary)", lineHeight: 1.1,
+          }}>
+            {greeting},
+          </h1>
+          <h2 style={{
+            fontFamily: "var(--font-dancing)", fontSize: "3rem",
+            color: "var(--accent)", lineHeight: 1,
+          }}>
+            {firstName}
+          </h2>
+        </div>
+
+        {/* Ursula quote card */}
+        <div
+          className="rounded-2xl p-5"
+          style={{ background: "var(--card)", border: "1px solid var(--border)" }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+            <div style={{ width: 20, height: 1, background: "var(--accent)" }} />
+            <span style={{
+              fontSize: "9px", letterSpacing: "0.2em", textTransform: "uppercase",
+              color: "var(--accent)", fontFamily: "var(--font-dm-sans)",
+            }}>
+              from mum
+            </span>
+            <div style={{ width: 20, height: 1, background: "var(--accent)" }} />
+          </div>
+          <p style={{
+            fontFamily: "var(--font-cormorant)", fontSize: "1.2rem",
+            fontStyle: "italic", color: "var(--primary)", lineHeight: 1.55,
+            marginBottom: 10,
+          }}>
+            {quote ?? "No quote yet today."}
+          </p>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <div style={{ width: 14, height: 1, background: "var(--border)" }} />
+            <span style={{
+              fontFamily: "var(--font-dancing)", fontSize: "1rem", color: "var(--accent)",
+            }}>
+              Ursula le Huray
+            </span>
+          </div>
+        </div>
+
+        {/* TED Talk card */}
+        <div
+          className="rounded-2xl p-5"
+          style={{ background: "var(--card)", border: "1px solid var(--border)" }}
+        >
+          <TedTalkWidget />
+        </div>
+
+        {/* Quick-link grid — Projects, Downtime, Interview Prep */}
+        <div className="grid grid-cols-3 gap-3">
+          {[
+            { href: "/projects", label: "Projects", emoji: "📁" },
+            { href: "/downtime", label: "Downtime", emoji: "🎬" },
+            { href: "/interview-prep", label: "Interview", emoji: "💼" },
+          ].map(({ href, label, emoji }) => (
+            <a
+              key={href}
+              href={href}
+              className="rounded-2xl flex flex-col items-center justify-center gap-1.5 py-4"
+              style={{ background: "var(--card)", border: "1px solid var(--border)", textDecoration: "none" }}
+            >
+              <span style={{ fontSize: "1.4rem" }}>{emoji}</span>
+              <span style={{
+                fontSize: "10px", letterSpacing: "0.05em", color: "var(--muted-foreground)",
+                fontFamily: "var(--font-dm-sans)",
+              }}>
+                {label}
+              </span>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      {/* ── DESKTOP layout (hidden on mobile) ──────────────────────── */}
+    <div className="hidden md:block" style={{
       height: "calc(100vh - 56px)",
       overflow: "hidden",
       background: "var(--background)",
@@ -216,11 +316,19 @@ export default function HomeClient({ firstName, greeting, today }: {
           </div>
         )}
 
+        {/* Vertical divider before TED widget */}
+        <div style={{ width: 1, background: "var(--border)", flexShrink: 0, margin: "20px 0" }} />
+
+        {/* TED Talk of the Day */}
+        <div style={{ flex: "0 0 260px", padding: "10px 20px 10px 20px", overflow: "hidden" }}>
+          <TedTalkWidget />
+        </div>
+
         {/* Vertical divider before quote */}
         <div style={{ width: 1, background: "var(--border)", flexShrink: 0, margin: "20px 0" }} />
 
         {/* Quote — top right, bigger */}
-        <div style={{ flex: "0 0 260px", padding: "10px 28px 10px 20px" }}>
+        <div style={{ flex: "0 0 240px", padding: "10px 28px 10px 20px" }}>
           <InlineQuote quote={quote} bigger />
         </div>
 
@@ -282,6 +390,7 @@ export default function HomeClient({ firstName, greeting, today }: {
         </div>
 
       </div>
-    </div>
+    </div>{/* end desktop wrapper */}
+    </>
   );
 }

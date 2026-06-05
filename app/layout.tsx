@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, DM_Sans, Dancing_Script } from "next/font/google";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
@@ -25,6 +25,24 @@ const dancing = Dancing_Script({
 export const metadata: Metadata = {
   title: "Soleil",
   description: "Martha's personal dashboard",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Soleil",
+  },
+  formatDetection: { telephone: false },
+  icons: {
+    icon: "/icons/icon-32.png",
+    apple: "/icons/apple-touch-icon.png",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#3D4A2E",
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default async function RootLayout({

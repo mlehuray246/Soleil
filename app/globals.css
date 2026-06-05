@@ -91,3 +91,50 @@
     @apply font-sans;
   }
 }
+
+/* ── iOS PWA / mobile fixes ─────────────────────────────────────────────────── */
+
+/* Remove tap highlight on all interactive elements */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Prevent text size adjustment when rotating */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Smooth momentum scrolling on iOS */
+body {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: none;
+}
+
+/* Safe area padding for pages that scroll — keeps content above the bottom tab bar */
+@media (max-width: 767px) {
+  main {
+    /* Content starts after mobile top bar */
+    padding-top: 0;
+  }
+}
+
+/* When running as an installed PWA (standalone mode) */
+@media (display-mode: standalone) {
+  /* Extra top padding for the notch / Dynamic Island */
+  nav:first-of-type {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
+/* Prevent pull-to-refresh interfering with the dashboard */
+@media (max-width: 767px) {
+  body {
+    overscroll-behavior: none;
+  }
+
+  /* Push all page content above the bottom tab bar (56px tab bar + safe area) */
+  main > * {
+    padding-bottom: calc(72px + env(safe-area-inset-bottom));
+  }
+}
